@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RareHaven Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Unbounded', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      padding: 4rem 1rem;
+      text-align: center;
+      background: rgba(0,0,0,0.7);
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      color: #00ffe1;
+      text-shadow: 0 0 15px #00ffe1;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background: #00000080;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #00ffe1;
+      text-decoration: none;
+      font-weight: bold;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #ffae00;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    section {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #ffae00;
+      text-shadow: 0 0 10px #ffae00;
+    }
+
+    .item-list li {
+      background: rgba(255,255,255,0.08);
+      margin: 1rem auto;
+      padding: 1rem;
+      border-radius: 12px;
+      max-width: 400px;
+      border-left: 4px solid #00ffe1;
+    }
+
+    .btn {
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      background: #00ffe1;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #00cfc1;
+    }
+
+    .selection-area {
+      margin-top: 1rem;
+    }
+
+    select, input[type="number"] {
+      width: 90%;
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    footer {
+      background: #111;
+      text-align: center;
+      padding: 1.5rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RAREHAVEN</h1>
+    <p>🔥 Exclusive Streetwear & Digital Drops</p>
+  </header>
+
+  <nav>
+    <a href="#about">About</a>
+    <a href="#items">Items</a>
+    <a href="#payment">Payment</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="about">
+    <h2>👤 About Us</h2>
+    <p>RareHaven menjual item rare, eksklusif, dan underground. Dipercayai pembeli seluruh Malaysia. Pembayaran hanya melalui Touch 'n Go. Aktif setiap hari 6:30 petang – 1:12 pagi.</p>
+    <p><strong>Visitors:</strong> <span id="visitCount">Loading...</span></p>
+  </section>
+
+  <section id="items">
+    <h2>🛍️ Available Items</h2>
+    <ul class="item-list" id="itemList">
+      <li>🐉 DragonFly — RM16</li>
+      <li>🦝 Raccoon — RM25</li>
+      <li>🪙 1T Sheckles — RM5</li>
+      <li>🦊 Red Fox — RM8</li>
+      <li>🦉 Night Owl — RM3</li>
+    </ul>
+  </section>
+
+  <section id="payment">
+    <h2>💳 Payment</h2>
+    <div class="selection-area">
+      <label>Select Item:</label>
+      <select id="itemSelect">
+        <option value="DragonFly">🐉 DragonFly — RM16</option>
+        <option value="Raccoon">🦝 Raccoon — RM25</option>
+        <option value="1T_Sheckles">🪙 1T Sheckles — RM5</option>
+        <option value="Red_Fox">🦊 Red Fox — RM8</option>
+        <option value="Night_Owl">🦉 Night Owl — RM3</option>
+      </select>
+
+      <label for="rating">Rate This Item (1-5):</label>
+      <input type="number" id="rating" min="1" max="5" />
+
+      <button class="btn" onclick="buyNow()">Buy Now via WhatsApp</button>
+      <button class="btn" onclick="rateItem()">Submit Rating</button>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>📞 Contact</h2>
+    <p>WhatsApp: +6012XXXXXXX<br>Email: amirproff0@gmail.com</p>
+  </section>
+
+  <footer>&copy; 2025 RareHaven. All Rights Reserved.</footer>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getDatabase, ref, get, set, update, increment } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDsPwrb0-9_9noOtlkNG0mzGaw64U-E7vU",
+      authDomain: "ravenhaven-7470d.firebaseapp.com",
+      databaseURL: "https://ravenhaven-7470d-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "ravenhaven-7470d",
+      storageBucket: "ravenhaven-7470d.appspot.com",
+      messagingSenderId: "524775890042",
+      appId: "1:524775890042:web:8b237c038878996dbb6fc3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Real-time Visitor Count
+    const visitRef = ref(db, 'visits');
+    get(visitRef).then(snapshot => {
+      let visits = snapshot.exists() ? snapshot.val() : 0;
+      document.getElementById("visitCount").textContent = visits + 1;
+      update(visitRef, increment(1));
+    });
+
+    // Buy Function
+    function buyNow() {
+      const item = document.getElementById("itemSelect").value;
+      const itemRef = ref(db, `items/${item}/buys`);
+      get(itemRef).then(snapshot => {
+        const count = snapshot.exists() ? snapshot.val() : 0;
+        set(itemRef, count + 1);
+      });
+      const phone = "60149606249";
+      const msg = `Hello, I want to buy: ${item.replace("_", " ")}`;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    // Rate Function
+    function rateItem() {
+      const item = document.getElementById("itemSelect").value;
+      const rating = document.getElementById("rating").value;
+      if (rating < 1 || rating > 5) {
+        alert("Please rate between 1 and 5!");
+        return;
+      }
+      const timestamp = Date.now();
+      const ratingRef = ref(db, `items/${item}/ratings/${timestamp}`);
+      set(ratingRef, parseInt(rating));
+      alert("Rating submitted!");
+    }
+
+    window.buyNow = buyNow;
+    window.rateItem = rateItem;
+  </script>
+</body>
+</html>
